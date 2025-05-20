@@ -11,7 +11,6 @@ interface User {
   phone: string;
   birthDate: string;
   username: string;
-  role?: string;
 }
 
 interface AuthContextType {
