@@ -7,12 +7,22 @@ import medicineCategoryRoutes from './routes/medicineCategory.routes';
 import supplierRoutes from './routes/supplier.routes';
 import fs from 'fs';
 import path from 'path';
+import cors from 'cors';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 // Middleware cho JSON body parsing
 app.use(express.json());
+
+// CORS middleware
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 204
+}));
 
 // Khởi tạo docs từ swagger-jsdoc
 const specs = swaggerJsdoc(swaggerOptions);
