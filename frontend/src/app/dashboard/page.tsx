@@ -37,7 +37,7 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2 text-[#0f172a]">Chào mừng, {user?.name}</h1>
+        <h1 className="text-3xl font-bold mb-2 text-[#0f172a]">Chào mừng, {user?.fullName}</h1>
         <p className="text-[#334155]">Quản lý nhà thuốc của bạn với Pharma Care</p>
       </div>
 

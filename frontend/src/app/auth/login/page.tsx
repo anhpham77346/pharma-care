@@ -41,7 +41,7 @@ export default function LoginPage() {
 
       // Use login function from AuthContext to handle token and redirection
       toast.success("Đăng nhập thành công!");
-      login(data.token);
+      login(data.data.token);
     } catch (error) {
       console.error("Login error:", error);
       toast.error(error instanceof Error ? error.message : "Đăng nhập thất bại");
