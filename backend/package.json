@@ -25,5 +25,12 @@
     "prisma": "^6.8.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "name": "pharmacy-care-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
