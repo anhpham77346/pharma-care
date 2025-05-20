@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { AuthProvider } from "@/context/AuthContext";
 import { Navigation } from "@/components/Navigation";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <AuthProvider>
+          <Toaster position="top-right" />
           <header className="bg-[#0057ba] py-4 shadow-md text-white">
             <div className="container mx-auto px-4 flex justify-between items-center">
               <Link href="/" className="text-2xl font-bold flex items-center gap-2">

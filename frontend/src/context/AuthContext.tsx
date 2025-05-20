@@ -5,9 +5,13 @@ import { useRouter } from "next/navigation";
 
 interface User {
   id: number;
-  name: string;
+  fullName: string;
   email: string;
-  role: string;
+  address: string;
+  phone: string;
+  birthDate: string;
+  username: string;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -37,7 +41,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           return;
         }
         
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/me`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -45,13 +49,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
         if (response.ok) {
           const userData = await response.json();
-          setUser(userData.data);
+          setUser(userData.user || userData.data);
         } else {
           // Token không hợp lệ, xóa khỏi localStorage
           localStorage.removeItem("token");
         }
       } catch (error) {
         console.error("Error checking authentication:", error);
+        localStorage.removeItem("token");
       } finally {
         setLoading(false);
       }
@@ -63,6 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Đăng nhập
   const login = (token: string) => {
     localStorage.setItem("token", token);
+    // Chuyển hướng đến dashboard
     router.push("/dashboard");
     // Sau khi lưu token, chúng ta sẽ tải lại dữ liệu người dùng
     window.location.reload();
