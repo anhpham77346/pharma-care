@@ -28,6 +28,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // Fetch user data using token
+  const fetchUserData = async (token: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        return userData.user || userData.data;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  };
+
   // Kiểm tra xem người dùng đã đăng nhập chưa khi tải trang
   useEffect(() => {
     const checkLoggedIn = async () => {
@@ -40,15 +60,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           return;
         }
         
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData.user || userData.data);
+        const userData = await fetchUserData(token);
+        if (userData) {
+          setUser(userData);
         } else {
           // Token không hợp lệ, xóa khỏi localStorage
           localStorage.removeItem("token");
@@ -65,12 +79,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   // Đăng nhập
-  const login = (token: string) => {
+  const login = async (token: string) => {
     localStorage.setItem("token", token);
-    // Chuyển hướng đến dashboard
-    router.push("/dashboard");
-    // Sau khi lưu token, chúng ta sẽ tải lại dữ liệu người dùng
-    window.location.reload();
+    
+    // Fetch user data immediately after login
+    const userData = await fetchUserData(token);
+    if (userData) {
+      setUser(userData);
+      // Only redirect after setting user data
+      router.push("/dashboard");
+    } else {
+      console.error("Failed to fetch user data after login");
+    }
   };
 
   // Đăng xuất
