@@ -47,3 +47,11 @@ Hệ thống quản lý nhà thuốc Pharma Care.
 - `GET /api/auth/me` - Lấy thông tin người dùng hiện tại (yêu cầu JWT token)
 - `PUT /api/auth/profile` - Cập nhật thông tin cá nhân (yêu cầu JWT token)
 - `POST /api/auth/change-password` - Đổi mật khẩu người dùng (yêu cầu JWT token)
+
+### Loại Thuốc (Medicine Categories)
+
+- `GET /api/medicine-categories` - Lấy danh sách tất cả loại thuốc (yêu cầu JWT token)
+- `GET /api/medicine-categories/:id` - Lấy chi tiết một loại thuốc theo ID (yêu cầu JWT token)
+- `POST /api/medicine-categories` - Thêm một loại thuốc mới (yêu cầu JWT token)
+- `PUT /api/medicine-categories/:id` - Cập nhật thông tin loại thuốc (yêu cầu JWT token)
+- `DELETE /api/medicine-categories/:id` - Xóa một loại thuốc (yêu cầu JWT token)
