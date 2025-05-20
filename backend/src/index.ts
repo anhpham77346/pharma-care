@@ -5,6 +5,8 @@ import { swaggerOptions } from './swagger';
 import authRoutes from './routes/auth.routes';
 import medicineCategoryRoutes from './routes/medicineCategory.routes';
 import supplierRoutes from './routes/supplier.routes';
+import fs from 'fs';
+import path from 'path';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -38,6 +40,45 @@ app.use('/api/suppliers', supplierRoutes);
  */
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World');
+});
+
+/**
+ * @openapi
+ * /api/export-docs:
+ *   get:
+ *     summary: Export API documentation as JSON
+ *     description: Exports and saves Swagger documentation as a JSON file on the server
+ *     responses:
+ *       200:
+ *         description: Documentation exported successfully
+ *       500:
+ *         description: Error exporting documentation
+ */
+app.get('/api/export-docs', (req: Request, res: Response) => {
+  try {
+    // Create directory if it doesn't exist
+    const exportDir = path.join(__dirname, '..', 'exports');
+    if (!fs.existsSync(exportDir)) {
+      fs.mkdirSync(exportDir, { recursive: true });
+    }
+
+    // Save the specs to a file
+    const filePath = path.join(exportDir, `api-docs-${Date.now()}.json`);
+    fs.writeFileSync(filePath, JSON.stringify(specs, null, 2));
+
+    res.json({
+      success: true,
+      message: 'API documentation exported successfully',
+      filePath: filePath
+    });
+  } catch (error) {
+    console.error('Error exporting API documentation:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error exporting API documentation',
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
 });
 
 app.listen(port, () => {
