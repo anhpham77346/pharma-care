@@ -4,6 +4,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import { swaggerOptions } from './swagger';
 import authRoutes from './routes/auth.routes';
 import medicineCategoryRoutes from './routes/medicineCategory.routes';
+import supplierRoutes from './routes/supplier.routes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +23,9 @@ app.use('/api/auth', authRoutes);
 
 // Route medicine categories
 app.use('/api/medicine-categories', medicineCategoryRoutes);
+
+// Route suppliers
+app.use('/api/suppliers', supplierRoutes);
 
 /**
  * @openapi
