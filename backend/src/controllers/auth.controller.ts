@@ -376,4 +376,54 @@ export const changePassword: RequestHandler = async (req: Request, res: Response
       message: 'Đã xảy ra lỗi khi đổi mật khẩu'
     });
   }
+};
+
+/**
+ * Lấy thông tin người dùng hiện tại
+ */
+export const getMe: RequestHandler = async (req: Request, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Không xác thực được người dùng'
+      });
+    }
+
+    const userId = req.user.userId;
+    
+    // Fetch complete user information from database
+    const user = await prisma.employee.findUnique({
+      where: {
+        id: userId
+      },
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        address: true,
+        birthDate: true
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy thông tin người dùng'
+      });
+    }
+
+    return res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    console.error('Get user profile error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Đã xảy ra lỗi khi lấy thông tin người dùng'
+    });
+  }
 }; 

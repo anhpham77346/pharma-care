@@ -1,4 +1,4 @@
-import express, { Request, Response, RequestHandler } from 'express';
+import express from 'express';
 import * as authController from '../controllers/auth.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 
@@ -106,17 +106,7 @@ router.post('/login', authController.login);
  *       500:
  *         description: Lỗi server
  */
-const getMeHandler: RequestHandler = (req: Request, res: Response) => {
-  return res.json({
-    success: true,
-    data: {
-      userId: req.user?.userId,
-      username: req.user?.username
-    }
-  });
-};
-
-router.get('/me', authenticate, getMeHandler);
+router.get('/me', authenticate, authController.getMe);
 
 /**
  * @openapi
