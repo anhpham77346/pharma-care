@@ -2,15 +2,22 @@ import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { swaggerOptions } from './swagger';
+import authRoutes from './routes/auth.routes';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Middleware cho JSON body parsing
+app.use(express.json());
 
 // Khởi tạo docs từ swagger-jsdoc
 const specs = swaggerJsdoc(swaggerOptions);
 
 // Mount Swagger UI tại đường dẫn /api-docs
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+// Route authentication
+app.use('/api/auth', authRoutes);
 
 /**
  * @openapi
