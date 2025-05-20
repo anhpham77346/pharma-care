@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
+  const { isAuthenticated, user } = useAuth();
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
@@ -14,18 +19,29 @@ export default function Home() {
             Hệ thống quản lý toàn diện giúp bạn quản lý thuốc, nhà cung cấp, và nhân viên một cách dễ dàng và hiệu quả.
           </p>
           <div className="flex gap-4">
-            <Link 
-              href="/auth/register" 
-              className="bg-[#0057ba] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#00408a] transition-colors"
-            >
-              Đăng ký ngay
-            </Link>
-            <Link 
-              href="/auth/login" 
-              className="bg-white border border-gray-300 text-[#0f172a] px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-            >
-              Đăng nhập
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link 
+                  href="/auth/register" 
+                  className="bg-[#0057ba] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#00408a] transition-colors"
+                >
+                  Đăng ký ngay
+                </Link>
+                <Link 
+                  href="/auth/login" 
+                  className="bg-white border border-gray-300 text-[#0f172a] px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                >
+                  Đăng nhập
+                </Link>
+              </>
+            ) : (
+              <Link 
+                href="/dashboard" 
+                className="bg-[#0057ba] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#00408a] transition-colors"
+              >
+                Vào Dashboard
+              </Link>
+            )}
           </div>
         </div>
         <div className="md:w-1/2 flex justify-center">
@@ -87,12 +103,21 @@ export default function Home() {
         <p className="text-lg mb-6 max-w-2xl mx-auto text-gray-100">
           Tối ưu hóa quy trình làm việc của nhà thuốc và nâng cao hiệu quả kinh doanh với hệ thống quản lý toàn diện của chúng tôi.
         </p>
-        <Link 
-          href="/auth/register" 
-          className="bg-white text-[#0057ba] px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-        >
-          Đăng ký miễn phí
-        </Link>
+        {!isAuthenticated ? (
+          <Link 
+            href="/auth/register" 
+            className="bg-white text-[#0057ba] px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
+            Đăng ký miễn phí
+          </Link>
+        ) : (
+          <Link 
+            href="/dashboard" 
+            className="bg-white text-[#0057ba] px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
+            Quản lý nhà thuốc của bạn
+          </Link>
+        )}
       </section>
     </div>
   );
