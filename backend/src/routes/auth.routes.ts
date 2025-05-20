@@ -118,4 +118,88 @@ const getMeHandler: RequestHandler = (req: Request, res: Response) => {
 
 router.get('/me', authenticate, getMeHandler);
 
+/**
+ * @openapi
+ * /api/auth/profile:
+ *   put:
+ *     summary: Cập nhật thông tin cá nhân
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullName:
+ *                 type: string
+ *                 description: Họ tên đầy đủ
+ *               birthDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Ngày sinh (YYYY-MM-DD)
+ *               address:
+ *                 type: string
+ *                 description: Địa chỉ
+ *               phone:
+ *                 type: string
+ *                 description: Số điện thoại
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Địa chỉ email
+ *     responses:
+ *       200:
+ *         description: Cập nhật thông tin thành công
+ *       400:
+ *         description: Dữ liệu không hợp lệ
+ *       401:
+ *         description: Không có quyền truy cập
+ *       404:
+ *         description: Không tìm thấy người dùng
+ *       500:
+ *         description: Lỗi server
+ */
+router.put('/profile', authenticate, authController.updateProfile);
+
+/**
+ * @openapi
+ * /api/auth/change-password:
+ *   post:
+ *     summary: Đổi mật khẩu
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 description: Mật khẩu hiện tại
+ *               newPassword:
+ *                 type: string
+ *                 description: Mật khẩu mới (ít nhất 6 ký tự)
+ *     responses:
+ *       200:
+ *         description: Đổi mật khẩu thành công
+ *       400:
+ *         description: Dữ liệu không hợp lệ hoặc mật khẩu hiện tại không đúng
+ *       401:
+ *         description: Không có quyền truy cập
+ *       404:
+ *         description: Không tìm thấy người dùng
+ *       500:
+ *         description: Lỗi server
+ */
+router.post('/change-password', authenticate, authController.changePassword);
+
 export default router; 

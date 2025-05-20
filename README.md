@@ -45,3 +45,5 @@ Hệ thống quản lý nhà thuốc Pharma Care.
 - `POST /api/auth/register` - Đăng ký người dùng mới
 - `POST /api/auth/login` - Đăng nhập
 - `GET /api/auth/me` - Lấy thông tin người dùng hiện tại (yêu cầu JWT token)
+- `PUT /api/auth/profile` - Cập nhật thông tin cá nhân (yêu cầu JWT token)
+- `POST /api/auth/change-password` - Đổi mật khẩu người dùng (yêu cầu JWT token)
