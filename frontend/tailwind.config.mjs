@@ -7,15 +7,9 @@ const config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {
-      colors: {
-        primary: "#0070f3",
-        secondary: "#1e2a3a",
-        accent: "#f87171",
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }
 
-export default config; 
+export default config;

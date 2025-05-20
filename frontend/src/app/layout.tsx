@@ -31,9 +31,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         <AuthProvider>
-          <header className="bg-gray-100 text-gray-800 py-4 shadow-md">
+          <header className="bg-primary py-4 shadow-md">
             <div className="container mx-auto px-4 flex justify-between items-center">
-              <Link href="/" className="text-2xl font-bold">Pharma Care</Link>
+              <Link href="/" className="text-2xl font-bold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                </svg>
+                Pharma Care
+              </Link>
               <Navigation />
             </div>
           </header>
@@ -42,9 +47,17 @@ export default function RootLayout({
             {children}
           </main>
           
-          <footer className="bg-secondary text-white py-4 mt-8">
-            <div className="container mx-auto px-4 text-center">
-              <p>© 2024 Pharma Care - Hệ thống quản lý nhà thuốc</p>
+          <footer className="bg-secondary py-6 mt-8">
+            <div className="container mx-auto px-4">
+              <div className="flex flex-col md:flex-row justify-between items-center">
+                <div className="mb-4 md:mb-0">
+                  <h3 className="text-xl font-bold mb-2">Pharma Care</h3>
+                  <p className="text-pharmacy-200">Hệ thống quản lý nhà thuốc chuyên nghiệp</p>
+                </div>
+                <div>
+                  <p className="text-pharmacy-200">© 2024 Pharma Care - Mọi quyền được bảo lưu</p>
+                </div>
+              </div>
             </div>
           </footer>
         </AuthProvider>
