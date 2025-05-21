@@ -231,6 +231,21 @@ export default function ProfilePage() {  const { user, isAuthenticated, loading,
 
             {!isEditing ? (
               <div className="space-y-4">
+                {/* Avatar display section */}
+                <div className="flex justify-center mb-6">
+                  {user?.avatarUrl ? (
+                    <img 
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${user.avatarUrl}`}
+                      alt="Avatar của người dùng"
+                      className="w-24 h-24 rounded-full object-cover border-2 border-[#0057ba]"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xl border-2 border-[#0057ba]">
+                      {user?.fullName ? user.fullName.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Tên đăng nhập</h3>

@@ -11,6 +11,7 @@ interface User {
   phone: string;
   birthDate: string;
   username: string;
+  avatarUrl?: string;
 }
 
 interface AuthContextType {
