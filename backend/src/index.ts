@@ -67,7 +67,7 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/api/export-docs', (req: Request, res: Response) => {
   try {
     // Create directory if it doesn't exist
-    const exportDir = path.join(__dirname, '..', 'exports');
+    const exportDir = path.join(__dirname, '../../frontend', 'exports');
     if (!fs.existsSync(exportDir)) {
       fs.mkdirSync(exportDir, { recursive: true });
     }
