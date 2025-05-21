@@ -19,6 +19,7 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  getToken: () => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -100,6 +101,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     router.push("/auth/login");
   };
 
+  // Lấy token từ localStorage
+  const getToken = async (): Promise<string | null> => {
+    return localStorage.getItem("token");
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -108,6 +114,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         login,
         logout,
         isAuthenticated: !!user,
+        getToken
       }}
     >
       {children}

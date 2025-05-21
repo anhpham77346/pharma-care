@@ -48,12 +48,20 @@ export default function DashboardPage() {
             <div>
               <h2 className="text-xl font-semibold mb-2 text-[#0f172a]">Quản lý thuốc</h2>
               <p className="text-[#334155] mb-4">Quản lý kho thuốc, danh mục và thông tin chi tiết</p>
-              <Link href="/medicines" className="text-[#0057ba] hover:text-[#00408a] flex items-center transition-colors">
-                Xem chi tiết
-                <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
+              <div className="flex flex-col space-y-2">
+                <Link href="/medicine-categories" className="text-[#0057ba] hover:text-[#00408a] flex items-center transition-colors">
+                  Danh mục thuốc
+                  <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+                <Link href="/medicines" className="text-[#0057ba] hover:text-[#00408a] flex items-center transition-colors">
+                  Kho thuốc
+                  <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </div>
             </div>
             <div className="bg-gray-100 p-3 rounded-full">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-[#0057ba]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
