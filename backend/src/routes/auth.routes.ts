@@ -238,9 +238,11 @@ router.post('/login', authController.login);
  *                     email:
  *                       type: string
  *                       example: "user@example.com"
- *                     role:
+ *                     avatarUrl:
  *                       type: string
- *                       example: "ADMIN"
+ *                       nullable: true
+ *                       example: "/files/avatar-1-550e8400-e29b-41d4-a716-446655440000.jpg"
+ *                       description: "Đường dẫn đến avatar của người dùng (null nếu chưa có avatar)"
  *       401:
  *         description: Không có quyền truy cập
  *         content:
