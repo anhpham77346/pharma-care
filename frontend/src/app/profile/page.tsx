@@ -31,6 +31,8 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [showAvatarConfirm, setShowAvatarConfirm] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState<{file: File, preview: string} | null>(null);
   const [profileData, setProfileData] = useState({
     fullName: "",
     birthDate: "",
@@ -180,13 +182,36 @@ export default function ProfilePage() {
       return;
     }
 
+    // Create a preview and store the file
+    const preview = URL.createObjectURL(file);
+    setSelectedAvatar({ file, preview });
+    setShowAvatarConfirm(true);
+    
+    // Clear the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const cancelAvatarUpload = () => {
+    if (selectedAvatar) {
+      URL.revokeObjectURL(selectedAvatar.preview);
+      setSelectedAvatar(null);
+    }
+    setShowAvatarConfirm(false);
+  };
+
+  const confirmAvatarUpload = async () => {
+    if (!selectedAvatar) return;
+    
     try {
       setIsUploadingAvatar(true);
+      setShowAvatarConfirm(false);
       setError("");
       setSuccess("");
 
       // Convert image to base64
-      const base64Image = await fileToBase64(file);
+      const base64Image = await fileToBase64(selectedAvatar.file);
       
       // Upload to server
       const token = await getToken();
@@ -214,9 +239,10 @@ export default function ProfilePage() {
       setError(err.message || "Có lỗi xảy ra khi cập nhật avatar");
     } finally {
       setIsUploadingAvatar(false);
-      // Clear the file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      // Clean up the preview URL
+      if (selectedAvatar) {
+        URL.revokeObjectURL(selectedAvatar.preview);
+        setSelectedAvatar(null);
       }
     }
   };
@@ -274,6 +300,39 @@ export default function ProfilePage() {
         {success && (
           <div className="mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-700">
             <p>{success}</p>
+          </div>
+        )}
+
+        {/* Avatar Confirmation Modal */}
+        {showAvatarConfirm && selectedAvatar && (
+          <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+              <h3 className="text-lg font-medium text-[#0f172a] mb-4">Xác nhận đổi ảnh đại diện</h3>
+              <div className="flex justify-center mb-4">
+                <img
+                  src={selectedAvatar.preview}
+                  alt="Avatar preview"
+                  className="w-32 h-32 rounded-full object-cover border-2 border-[#0057ba]"
+                />
+              </div>
+              <p className="text-gray-600 mb-4 text-center">
+                Bạn có chắc chắn muốn cập nhật ảnh đại diện này không?
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={cancelAvatarUpload}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 cursor-pointer"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmAvatarUpload}
+                  className="px-4 py-2 bg-[#0057ba] text-white rounded-md hover:bg-[#004080] cursor-pointer"
+                >
+                  Xác nhận
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
