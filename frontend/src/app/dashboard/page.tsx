@@ -78,7 +78,7 @@ export default function DashboardPage() {
               <h2 className="text-xl font-semibold mb-2 text-[#0f172a]">Nhà cung cấp</h2>
               <p className="text-[#334155] mb-4">Quản lý thông tin nhà cung cấp và đơn hàng</p>
               <Link href="/suppliers" className="text-[#e11d48] hover:text-[#be123c] flex items-center transition-colors">
-                Xem chi tiết
+                Danh sách nhà cung cấp
                 <svg className="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
