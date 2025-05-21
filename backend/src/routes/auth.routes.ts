@@ -494,4 +494,99 @@ router.put('/profile', authenticate, authController.updateProfile);
  */
 router.post('/change-password', authenticate, authController.changePassword);
 
+/**
+ * @openapi
+ * /api/auth/avatar:
+ *   post:
+ *     summary: Cập nhật avatar của nhân viên
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - avatarBase64
+ *             properties:
+ *               avatarBase64:
+ *                 type: string
+ *                 description: Dữ liệu ảnh dạng base64 (bao gồm phần data:image/jpeg;base64,)
+ *     responses:
+ *       200:
+ *         description: Cập nhật avatar thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Cập nhật avatar thành công"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     avatarUrl:
+ *                       type: string
+ *                       example: "/files/avatar-1-abcd1234.jpg"
+ *       400:
+ *         description: Dữ liệu không hợp lệ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Dữ liệu avatar không hợp lệ"
+ *       401:
+ *         description: Không có quyền truy cập
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không có quyền truy cập"
+ *       404:
+ *         description: Không tìm thấy người dùng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không tìm thấy thông tin nhân viên"
+ *       500:
+ *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Đã xảy ra lỗi khi cập nhật avatar"
+ */
+router.post('/avatar', authenticate, authController.updateAvatar);
+
 export default router; 

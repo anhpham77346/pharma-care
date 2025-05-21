@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Middleware cho JSON body parsing
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));  // Increased limit for base64 images
 
 // CORS middleware
 app.use(cors({
@@ -23,6 +23,15 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus: 204
 }));
+
+// Ensure files directory exists
+const filesDirectory = path.join(process.cwd(), 'files');
+if (!fs.existsSync(filesDirectory)) {
+  fs.mkdirSync(filesDirectory, { recursive: true });
+}
+
+// Serve static files from 'files' directory
+app.use('/files', express.static(filesDirectory));
 
 // Khởi tạo docs từ swagger-jsdoc
 const specs = swaggerJsdoc(swaggerOptions);

@@ -2,8 +2,18 @@ import { Request, Response, RequestHandler } from 'express';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { hashPassword, comparePassword } from '../utils/password';
 import { generateToken } from '../utils/jwt';
+import { saveBase64Image, deleteFile } from '../utils/file';
+import path from 'path';
 
 const prisma = new PrismaClient();
+
+// Extend the Request type to include user property
+interface AuthRequest extends Request {
+  user?: {
+    userId: number;
+    username: string;
+  };
+}
 
 interface RegisterRequestBody {
   fullName: string;
@@ -31,6 +41,10 @@ interface UpdateProfileRequestBody {
 interface ChangePasswordRequestBody {
   currentPassword: string;
   newPassword: string;
+}
+
+interface UpdateAvatarRequestBody {
+  avatarBase64: string;
 }
 
 /**
@@ -201,25 +215,70 @@ export const login: RequestHandler = async (req: Request, res: Response) => {
 };
 
 /**
- * Cập nhật thông tin cá nhân
+ * Lấy thông tin người dùng hiện tại
  */
-export const updateProfile: RequestHandler = async (req: Request, res: Response) => {
+export const getMe: RequestHandler = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) {
+    if (!req.user || !req.user.userId) {
       return res.status(401).json({
         success: false,
-        message: 'Không xác thực được người dùng'
+        message: 'Không có quyền truy cập'
       });
     }
 
     const userId = req.user.userId;
-    const { 
-      fullName, 
-      birthDate, 
-      address, 
-      phone, 
-      email
-    } = req.body as UpdateProfileRequestBody;
+
+    // Fetch complete user information from database
+    const user = await prisma.employee.findUnique({
+      where: {
+        id: userId
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy người dùng'
+      });
+    }
+
+    // Return user data without sensitive information
+    return res.status(200).json({
+      success: true,
+      data: {
+        id: user.id,
+        fullName: user.fullName,
+        birthDate: user.birthDate,
+        address: user.address,
+        phone: user.phone,
+        email: user.email,
+        username: user.username,
+        avatarUrl: user.avatarUrl
+      }
+    });
+  } catch (error) {
+    console.error('Get user profile error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Đã xảy ra lỗi khi lấy thông tin người dùng'
+    });
+  }
+};
+
+/**
+ * Cập nhật thông tin cá nhân
+ */
+export const updateProfile: RequestHandler = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Không có quyền truy cập'
+      });
+    }
+
+    const userId = req.user.userId;
+    const { fullName, birthDate, address, phone, email } = req.body as UpdateProfileRequestBody;
 
     // Lấy thông tin người dùng hiện tại
     const employee = await prisma.employee.findUnique({
@@ -379,51 +438,76 @@ export const changePassword: RequestHandler = async (req: Request, res: Response
 };
 
 /**
- * Lấy thông tin người dùng hiện tại
+ * Cập nhật avatar của nhân viên
  */
-export const getMe: RequestHandler = async (req: Request, res: Response) => {
+export const updateAvatar: RequestHandler = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user || !req.user.userId) {
       return res.status(401).json({
         success: false,
-        message: 'Không xác thực được người dùng'
+        message: 'Không có quyền truy cập'
       });
     }
 
     const userId = req.user.userId;
-    
-    // Fetch complete user information from database
-    const user = await prisma.employee.findUnique({
-      where: {
-        id: userId
-      },
-      select: {
-        id: true,
-        username: true,
-        fullName: true,
-        email: true,
-        phone: true,
-        address: true,
-        birthDate: true
-      }
-    });
+    const { avatarBase64 } = req.body as UpdateAvatarRequestBody;
 
-    if (!user) {
-      return res.status(404).json({
+    if (!avatarBase64) {
+      return res.status(400).json({
         success: false,
-        message: 'Không tìm thấy thông tin người dùng'
+        message: 'Dữ liệu avatar không hợp lệ'
       });
     }
 
-    return res.json({
+    // Tìm thông tin nhân viên hiện tại
+    const employee = await prisma.employee.findUnique({
+      where: {
+        id: userId
+      }
+    });
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy thông tin nhân viên'
+      });
+    }
+
+    // Xóa avatar cũ nếu có
+    if (employee.avatarUrl) {
+      deleteFile(employee.avatarUrl);
+    }
+
+    // Lưu avatar mới
+    const filesDirectory = path.join(process.cwd(), 'files');
+    const avatarUrl = saveBase64Image(
+      avatarBase64,
+      filesDirectory,
+      `avatar-${userId}`
+    );
+
+    // Cập nhật thông tin avatar trong database
+    const updatedEmployee = await prisma.employee.update({
+      where: {
+        id: userId
+      },
+      data: {
+        avatarUrl
+      }
+    });
+
+    return res.status(200).json({
       success: true,
-      user
+      message: 'Cập nhật avatar thành công',
+      data: {
+        avatarUrl: updatedEmployee.avatarUrl
+      }
     });
   } catch (error) {
-    console.error('Get user profile error:', error);
+    console.error('Update avatar error:', error);
     return res.status(500).json({
       success: false,
-      message: 'Đã xảy ra lỗi khi lấy thông tin người dùng'
+      message: 'Đã xảy ra lỗi khi cập nhật avatar'
     });
   }
 }; 
