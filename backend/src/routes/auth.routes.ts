@@ -51,10 +51,60 @@ const router = express.Router();
  *     responses:
  *       201:
  *         description: Đăng ký thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Đăng ký thành công"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: "user123"
+ *                     fullName:
+ *                       type: string
+ *                       example: "Nguyễn Văn A"
  *       400:
  *         description: Dữ liệu không hợp lệ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Dữ liệu đăng ký không hợp lệ"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["Username đã tồn tại", "Email không hợp lệ"]
  *       500:
  *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Đã xảy ra lỗi khi đăng ký"
  */
 router.post('/register', authController.register);
 
@@ -83,10 +133,64 @@ router.post('/register', authController.register);
  *     responses:
  *       200:
  *         description: Đăng nhập thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Đăng nhập thành công"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accessToken:
+ *                       type: string
+ *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: integer
+ *                           example: 1
+ *                         username:
+ *                           type: string
+ *                           example: "user123"
+ *                         fullName:
+ *                           type: string
+ *                           example: "Nguyễn Văn A"
+ *                         role:
+ *                           type: string
+ *                           example: "ADMIN"
  *       401:
  *         description: Thông tin đăng nhập không đúng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Tên đăng nhập hoặc mật khẩu không đúng"
  *       500:
  *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Đã xảy ra lỗi khi đăng nhập"
  */
 router.post('/login', authController.login);
 
@@ -101,10 +205,68 @@ router.post('/login', authController.login);
  *     responses:
  *       200:
  *         description: Thông tin người dùng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: "user123"
+ *                     fullName:
+ *                       type: string
+ *                       example: "Nguyễn Văn A"
+ *                     birthDate:
+ *                       type: string
+ *                       format: date
+ *                       example: "1990-01-01"
+ *                     address:
+ *                       type: string
+ *                       example: "123 Đường ABC, Quận XYZ, TP HCM"
+ *                     phone:
+ *                       type: string
+ *                       example: "0901234567"
+ *                     email:
+ *                       type: string
+ *                       example: "user@example.com"
+ *                     role:
+ *                       type: string
+ *                       example: "ADMIN"
  *       401:
  *         description: Không có quyền truy cập
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không có quyền truy cập"
  *       500:
  *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Đã xảy ra lỗi khi lấy thông tin người dùng"
  */
 router.get('/me', authenticate, authController.getMe);
 
@@ -143,14 +305,99 @@ router.get('/me', authenticate, authController.getMe);
  *     responses:
  *       200:
  *         description: Cập nhật thông tin thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Cập nhật thông tin thành công"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     username:
+ *                       type: string
+ *                       example: "user123"
+ *                     fullName:
+ *                       type: string
+ *                       example: "Nguyễn Văn A"
+ *                     birthDate:
+ *                       type: string
+ *                       format: date
+ *                       example: "1990-01-01"
+ *                     address:
+ *                       type: string
+ *                       example: "123 Đường ABC, Quận XYZ, TP HCM"
+ *                     phone:
+ *                       type: string
+ *                       example: "0901234567"
+ *                     email:
+ *                       type: string
+ *                       example: "user@example.com"
  *       400:
  *         description: Dữ liệu không hợp lệ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Dữ liệu không hợp lệ"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["Email không hợp lệ", "Số điện thoại không đúng định dạng"]
  *       401:
  *         description: Không có quyền truy cập
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không có quyền truy cập"
  *       404:
  *         description: Không tìm thấy người dùng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không tìm thấy người dùng"
  *       500:
  *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Đã xảy ra lỗi khi cập nhật thông tin"
  */
 router.put('/profile', authenticate, authController.updateProfile);
 
@@ -181,14 +428,69 @@ router.put('/profile', authenticate, authController.updateProfile);
  *     responses:
  *       200:
  *         description: Đổi mật khẩu thành công
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Đổi mật khẩu thành công"
  *       400:
  *         description: Dữ liệu không hợp lệ hoặc mật khẩu hiện tại không đúng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Mật khẩu hiện tại không đúng"
  *       401:
  *         description: Không có quyền truy cập
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không có quyền truy cập"
  *       404:
  *         description: Không tìm thấy người dùng
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Không tìm thấy người dùng"
  *       500:
  *         description: Lỗi server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Đã xảy ra lỗi khi đổi mật khẩu"
  */
 router.post('/change-password', authenticate, authController.changePassword);
 
