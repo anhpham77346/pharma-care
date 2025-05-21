@@ -9,15 +9,17 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
+    username: "",
     email: "",
+    birthDate: "",
+    address: "",
+    phone: "",
     password: "",
     confirmPassword: "",
-    phone: "",
-    address: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -37,7 +39,7 @@ export default function RegisterPage() {
     try {
       const { confirmPassword, ...dataToSend } = formData;
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/register`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,6 +50,9 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (data.errors && Array.isArray(data.errors)) {
+          throw new Error(data.errors.join(", "));
+        }
         throw new Error(data.message || "Đăng ký thất bại");
       }
 
@@ -72,16 +77,20 @@ export default function RegisterPage() {
           </div>
         )}
         
+        <div className="text-xs text-gray-500 mb-4">
+          <span className="text-red-500">*</span> Trường bắt buộc
+        </div>
+        
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="name" className="block text-[#334155] font-medium mb-2">
-              Họ và tên
+            <label htmlFor="fullName" className="block text-[#334155] font-medium mb-2">
+              Họ và tên <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="fullName"
+              name="fullName"
+              value={formData.fullName}
               onChange={handleChange}
               required
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0057ba]"
@@ -90,8 +99,24 @@ export default function RegisterPage() {
           </div>
           
           <div className="mb-4">
+            <label htmlFor="username" className="block text-[#334155] font-medium mb-2">
+              Tên đăng nhập <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0057ba]"
+              placeholder="Nhập tên đăng nhập"
+            />
+          </div>
+          
+          <div className="mb-4">
             <label htmlFor="email" className="block text-[#334155] font-medium mb-2">
-              Email
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -106,8 +131,23 @@ export default function RegisterPage() {
           </div>
           
           <div className="mb-4">
+            <label htmlFor="birthDate" className="block text-[#334155] font-medium mb-2">
+              Ngày sinh <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              id="birthDate"
+              name="birthDate"
+              value={formData.birthDate}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0057ba]"
+            />
+          </div>
+          
+          <div className="mb-4">
             <label htmlFor="phone" className="block text-[#334155] font-medium mb-2">
-              Số điện thoại
+              Số điện thoại <span className="text-red-500">*</span>
             </label>
             <input
               type="tel"
@@ -123,23 +163,23 @@ export default function RegisterPage() {
           
           <div className="mb-4">
             <label htmlFor="address" className="block text-[#334155] font-medium mb-2">
-              Địa chỉ
+              Địa chỉ <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <textarea
               id="address"
               name="address"
               value={formData.address}
               onChange={handleChange}
               required
+              rows={2}
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#0057ba]"
               placeholder="Nhập địa chỉ"
-            />
+            ></textarea>
           </div>
           
           <div className="mb-4">
             <label htmlFor="password" className="block text-[#334155] font-medium mb-2">
-              Mật khẩu
+              Mật khẩu <span className="text-red-500">*</span>
             </label>
             <input
               type="password"
@@ -155,7 +195,7 @@ export default function RegisterPage() {
           
           <div className="mb-6">
             <label htmlFor="confirmPassword" className="block text-[#334155] font-medium mb-2">
-              Xác nhận mật khẩu
+              Xác nhận mật khẩu <span className="text-red-500">*</span>
             </label>
             <input
               type="password"
