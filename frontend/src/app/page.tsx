@@ -46,17 +46,14 @@ export default function Home() {
         </div>
         <div className="md:w-1/2 flex justify-center">
           <div className="relative w-full max-w-md h-72 md:h-96 bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200">
-            {/* Placeholder for pharmacy image - replace with actual image */}
-            <div className="absolute inset-0 flex items-center justify-center text-gray-700">
-              <span className="text-xl flex flex-col items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M12 8v8" />
-                  <path d="M8 12h8" />
-                </svg>
-                <span className="mt-2">Hình ảnh nhà thuốc</span>
-              </span>
-            </div>
+            {/* Pharmacy image */}
+            <Image
+              src="/pharma-cropped.jpg"
+              alt="Pharmacy image"
+              fill
+              priority
+              className="object-cover"
+            />
           </div>
         </div>
       </section>
