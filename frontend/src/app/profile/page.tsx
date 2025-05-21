@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
@@ -14,10 +14,23 @@ const formatDateWithLeadingZeros = (dateString: string) => {
   return `${day}/${month}/${year}`;
 };
 
-export default function ProfilePage() {  const { user, isAuthenticated, loading, getToken, refreshUserData } = useAuth();
+// Helper function to convert file to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+export default function ProfilePage() {  
+  const { user, isAuthenticated, loading, getToken, refreshUserData } = useAuth();
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [profileData, setProfileData] = useState({
     fullName: "",
     birthDate: "",
@@ -146,6 +159,68 @@ export default function ProfilePage() {  const { user, isAuthenticated, loading,
     }
   };
 
+  // Handle avatar update
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError("Vui lòng chọn file hình ảnh");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Kích thước file không được vượt quá 5MB");
+      return;
+    }
+
+    try {
+      setIsUploadingAvatar(true);
+      setError("");
+      setSuccess("");
+
+      // Convert image to base64
+      const base64Image = await fileToBase64(file);
+      
+      // Upload to server
+      const token = await getToken();
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/avatar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ avatarBase64: base64Image }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Có lỗi xảy ra khi cập nhật avatar");
+      }
+
+      // Refresh user data in the context to update the UI
+      await refreshUserData();
+      
+      setSuccess("Cập nhật avatar thành công");
+    } catch (err: any) {
+      setError(err.message || "Có lỗi xảy ra khi cập nhật avatar");
+    } finally {
+      setIsUploadingAvatar(false);
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   // Cancel editing mode
   const handleCancelEdit = () => {
     if (user) {
@@ -232,18 +307,47 @@ export default function ProfilePage() {  const { user, isAuthenticated, loading,
             {!isEditing ? (
               <div className="space-y-4">
                 {/* Avatar display section */}
-                <div className="flex justify-center mb-6">
-                  {user?.avatarUrl ? (
-                    <img 
-                      src={`${process.env.NEXT_PUBLIC_API_URL}${user.avatarUrl}`}
-                      alt="Avatar của người dùng"
-                      className="w-24 h-24 rounded-full object-cover border-2 border-[#0057ba]"
-                    />
-                  ) : (
-                    <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xl border-2 border-[#0057ba]">
-                      {user?.fullName ? user.fullName.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase()}
+                <div className="flex flex-col items-center mb-6">
+                  <div 
+                    className="relative cursor-pointer group"
+                    onClick={handleAvatarClick}
+                  >
+                    {user?.avatarUrl ? (
+                      <img 
+                        src={`${process.env.NEXT_PUBLIC_API_URL}${user.avatarUrl}`}
+                        alt="Avatar của người dùng"
+                        className="w-24 h-24 rounded-full object-cover border-2 border-[#0057ba]"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-xl border-2 border-[#0057ba]">
+                        {user?.fullName ? user.fullName.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
                     </div>
-                  )}
+                    {isUploadingAvatar && (
+                      <div className="absolute inset-0 bg-black bg-opacity-60 rounded-full flex items-center justify-center">
+                        <svg className="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                  <p className="mt-2 text-sm text-[#0057ba] hover:text-[#004080] cursor-pointer" onClick={handleAvatarClick}>
+                    Đổi ảnh đại diện
+                  </p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
