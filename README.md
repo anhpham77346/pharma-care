@@ -121,35 +121,35 @@ cd pharma-care
 
 - `POST /api/auth/register` - Đăng ký người dùng mới
 - `POST /api/auth/login` - Đăng nhập
-- `GET /api/auth/me` - Lấy thông tin người dùng hiện tại (yêu cầu JWT token)
-- `PUT /api/auth/profile` - Cập nhật thông tin cá nhân (yêu cầu JWT token)
-- `POST /api/auth/change-password` - Đổi mật khẩu người dùng (yêu cầu JWT token)
-- `POST /api/auth/avatar` - Cập nhật ảnh đại diện (yêu cầu JWT token)
+- `GET /api/auth/me` - Lấy thông tin người dùng hiện tại
+- `PUT /api/auth/profile` - Cập nhật thông tin cá nhân
+- `POST /api/auth/change-password` - Đổi mật khẩu người dùng
+- `POST /api/auth/avatar` - Cập nhật ảnh đại diện
 
 ### Loại Thuốc (Medicine Categories)
 
-- `GET /api/medicine-categories` - Lấy danh sách tất cả loại thuốc (yêu cầu JWT token)
-- `GET /api/medicine-categories/:id` - Lấy chi tiết một loại thuốc theo ID (yêu cầu JWT token)
-- `POST /api/medicine-categories` - Thêm một loại thuốc mới (yêu cầu JWT token)
-- `PUT /api/medicine-categories/:id` - Cập nhật thông tin loại thuốc (yêu cầu JWT token)
-- `DELETE /api/medicine-categories/:id` - Xóa một loại thuốc (yêu cầu JWT token)
+- `GET /api/medicine-categories` - Lấy danh sách tất cả loại thuốc
+- `GET /api/medicine-categories/:id` - Lấy chi tiết một loại thuốc theo ID
+- `POST /api/medicine-categories` - Thêm một loại thuốc mới
+- `PUT /api/medicine-categories/:id` - Cập nhật thông tin loại thuốc
+- `DELETE /api/medicine-categories/:id` - Xóa một loại thuốc
 
 ### Nhà Cung Cấp (Suppliers)
 
-- `GET /api/suppliers` - Lấy danh sách tất cả nhà cung cấp (yêu cầu JWT token)
-- `GET /api/suppliers/:id` - Lấy chi tiết một nhà cung cấp theo ID (yêu cầu JWT token)
-- `POST /api/suppliers` - Thêm một nhà cung cấp mới (yêu cầu JWT token)
-- `PUT /api/suppliers/:id` - Cập nhật thông tin nhà cung cấp (yêu cầu JWT token)
-- `DELETE /api/suppliers/:id` - Xóa một nhà cung cấp (yêu cầu JWT token)
+- `GET /api/suppliers` - Lấy danh sách tất cả nhà cung cấp
+- `GET /api/suppliers/:id` - Lấy chi tiết một nhà cung cấp theo ID
+- `POST /api/suppliers` - Thêm một nhà cung cấp mới
+- `PUT /api/suppliers/:id` - Cập nhật thông tin nhà cung cấp
+- `DELETE /api/suppliers/:id` - Xóa một nhà cung cấp
 
 ### Thuốc (Medicines)
 
-- `GET /api/medicines` - Lấy danh sách tất cả thuốc (yêu cầu JWT token)
-- `GET /api/medicines/:id` - Lấy chi tiết một thuốc theo ID (yêu cầu JWT token)
-- `POST /api/medicines` - Thêm một thuốc mới (yêu cầu JWT token)
-- `PUT /api/medicines/:id` - Cập nhật thông tin thuốc (yêu cầu JWT token)
-- `DELETE /api/medicines/:id` - Xóa một thuốc (yêu cầu JWT token)
-- `GET /api/medicines/inventory/all` - Xem thông tin tồn kho (yêu cầu JWT token)
+- `GET /api/medicines` - Lấy danh sách tất cả thuốc
+- `GET /api/medicines/:id` - Lấy chi tiết một thuốc theo ID
+- `POST /api/medicines` - Thêm một thuốc mới
+- `PUT /api/medicines/:id` - Cập nhật thông tin thuốc
+- `DELETE /api/medicines/:id` - Xóa một thuốc
+- `GET /api/medicines/inventory/all` - Xem thông tin tồn kho
 
 ### Hóa Đơn Bán Hàng (Sale Invoices)
 
