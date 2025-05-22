@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes';
 import medicineCategoryRoutes from './routes/medicineCategory.routes';
 import supplierRoutes from './routes/supplier.routes';
 import medicineRoutes from './routes/medicine.routes';
+import saleInvoiceRoutes from './routes/saleInvoice.routes';
 import fs from 'fs';
 import path from 'path';
 import cors from 'cors';
@@ -51,6 +52,9 @@ app.use('/api/suppliers', supplierRoutes);
 
 // Route medicines
 app.use('/api/medicines', medicineRoutes);
+
+// Route sale invoices
+app.use('/api/sale-invoices', saleInvoiceRoutes);
 
 /**
  * @openapi

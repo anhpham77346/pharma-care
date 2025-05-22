@@ -23,6 +23,9 @@ model Employee {
   username     String   @unique
   passwordHash String
   avatarUrl    String?
+
+  // Quan hệ tới hóa đơn bán
+  saleInvoices SaleInvoice[]
 }
 
 model MedicineCategory {
@@ -47,6 +50,9 @@ model Medicine {
   category       MedicineCategory @relation(fields: [categoryId], references: [id])
   categoryId     Int
 
+  // Quan hệ tới chi tiết hóa đơn bán
+  invoiceDetails SaleInvoiceDetail[]
+
   @@index([categoryId])
 }
 
@@ -56,4 +62,35 @@ model Supplier {
   address String
   phone   String
   email   String?
+}
+
+model SaleInvoice {
+  id            Int                   @id @default(autoincrement())
+  invoiceDate   DateTime              @default(now())
+
+  // Quan hệ tới nhân viên
+  employee      Employee              @relation(fields: [employeeId], references: [id])
+  employeeId    Int
+
+  // Quan hệ tới chi tiết hóa đơn
+  details       SaleInvoiceDetail[]
+
+  @@index([employeeId])
+}
+
+model SaleInvoiceDetail {
+  id             Int           @id @default(autoincrement())
+  quantity       Int
+  unitPrice      Int
+
+  // Quan hệ tới hóa đơn bán
+  saleInvoice    SaleInvoice   @relation(fields: [saleInvoiceId], references: [id])
+  saleInvoiceId  Int
+
+  // Quan hệ tới thuốc
+  medicine       Medicine      @relation(fields: [medicineId], references: [id])
+  medicineId     Int
+
+  @@index([saleInvoiceId])
+  @@index([medicineId])
 }
