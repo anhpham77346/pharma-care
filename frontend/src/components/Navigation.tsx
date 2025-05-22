@@ -38,6 +38,9 @@ export const Navigation: React.FC = () => {
           <Link href="/dashboard" className="hover:text-gray-200 transition-colors">
             Dashboard
           </Link>
+          <Link href="/medicines" className="hover:text-gray-200 transition-colors">
+            Quản lý thuốc
+          </Link>
           <div className="relative" ref={dropdownRef}>
             <button 
               className="hover:text-gray-200 transition-colors flex items-center gap-2"
