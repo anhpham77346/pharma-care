@@ -4,7 +4,11 @@ Hệ thống quản lý nhà thuốc Pharma Care.
 
 ## Giao diện hệ thống
 
+### Trang chủ
 ![Giao diện trang chủ](screenshots/home.png)
+
+### Swagger UI - API Documentation
+![Swagger UI](screenshots/swagger-ui.png)
 
 ## Yêu cầu hệ thống
 
