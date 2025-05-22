@@ -2,6 +2,10 @@
 
 Hệ thống quản lý nhà thuốc Pharma Care.
 
+## Giao diện hệ thống
+
+![Giao diện trang chủ](screenshots/home.png)
+
 ## Yêu cầu hệ thống
 
 - Node.js (v20 hoặc cao hơn)
