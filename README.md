@@ -2,10 +2,25 @@
 
 Hệ thống quản lý nhà thuốc Pharma Care.
 
-## Backend Setup
+## Yêu cầu hệ thống
+
+- Node.js (v20 hoặc cao hơn)
+- npm hoặc yarn
+- MySQL (v8.0 hoặc cao hơn)
+
+## Cài đặt dự án
+
+### Clone dự án
+
+```bash
+git clone https://github.com/your-username/pharma-care.git
+cd pharma-care
+```
+
+### Backend Setup
 
 1. Cài đặt các dependencies:
-   ```
+   ```bash
    cd backend
    npm install
    ```
@@ -20,23 +35,60 @@ Hệ thống quản lý nhà thuốc Pharma Care.
    JWT_EXPIRES_IN="24h"
 
    # Server config
-   PORT=3000
+   PORT=8000
+   
+   # Frontend URL for CORS
+   FRONTEND_URL="http://localhost:3000"
    ```
 
-3. Tạo database và chạy migrations:
+3. Tạo database MySQL:
+   ```sql
+   CREATE DATABASE pharma_care;
    ```
+
+4. Tạo và chạy migrations:
+   ```bash
    npx prisma migrate dev --name init
    ```
 
-4. Khởi chạy server phát triển:
-   ```
+5. Khởi chạy server phát triển:
+   ```bash
    npm run dev
    ```
 
-5. Mở Swagger UI để kiểm tra API:
+6. Mở Swagger UI để kiểm tra API:
    ```
-   http://localhost:3000/api-docs
+   http://localhost:8000/api-docs
    ```
+
+### Frontend Setup
+
+1. Mở terminal mới và cài đặt dependencies:
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. Tạo file `.env.local` trong thư mục frontend với nội dung sau:
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
+
+3. Khởi chạy server phát triển:
+   ```bash
+   npm run dev
+   ```
+
+4. Mở trình duyệt và truy cập:
+   ```
+   http://localhost:3000
+   ```
+
+## Sử dụng hệ thống
+
+1. Đăng ký tài khoản mới.
+
+2. Khám phá các chức năng quản lý thuốc, nhà cung cấp, và bán hàng.
 
 ## API Endpoints
 
@@ -47,6 +99,7 @@ Hệ thống quản lý nhà thuốc Pharma Care.
 - `GET /api/auth/me` - Lấy thông tin người dùng hiện tại (yêu cầu JWT token)
 - `PUT /api/auth/profile` - Cập nhật thông tin cá nhân (yêu cầu JWT token)
 - `POST /api/auth/change-password` - Đổi mật khẩu người dùng (yêu cầu JWT token)
+- `POST /api/auth/avatar` - Cập nhật ảnh đại diện (yêu cầu JWT token)
 
 ### Loại Thuốc (Medicine Categories)
 
@@ -63,3 +116,19 @@ Hệ thống quản lý nhà thuốc Pharma Care.
 - `POST /api/suppliers` - Thêm một nhà cung cấp mới (yêu cầu JWT token)
 - `PUT /api/suppliers/:id` - Cập nhật thông tin nhà cung cấp (yêu cầu JWT token)
 - `DELETE /api/suppliers/:id` - Xóa một nhà cung cấp (yêu cầu JWT token)
+
+### Thuốc (Medicines)
+
+- `GET /api/medicines` - Lấy danh sách tất cả thuốc (yêu cầu JWT token)
+- `GET /api/medicines/:id` - Lấy chi tiết một thuốc theo ID (yêu cầu JWT token)
+- `POST /api/medicines` - Thêm một thuốc mới (yêu cầu JWT token)
+- `PUT /api/medicines/:id` - Cập nhật thông tin thuốc (yêu cầu JWT token)
+- `DELETE /api/medicines/:id` - Xóa một thuốc (yêu cầu JWT token)
+- `GET /api/medicines/inventory/all` - Xem thông tin tồn kho (yêu cầu JWT token)
+
+### Hóa Đơn Bán Hàng (Sale Invoices)
+
+- `POST /api/sale-invoices` - Tạo hóa đơn bán hàng mới
+- `GET /api/sale-invoices/:id` - Lấy chi tiết hóa đơn theo ID
+- `GET /api/sale-invoices/search` - Tìm kiếm hóa đơn theo khoảng thời gian
+- `GET /api/sale-invoices/revenue-report` - Xem báo cáo doanh thu
