@@ -2,6 +2,23 @@
 
 Hệ thống quản lý nhà thuốc Pharma Care.
 
+## Công nghệ sử dụng
+
+### Backend
+- **Node.js** - Môi trường runtime
+- **Express** - Framework API
+- **Prisma** - ORM và database migrations
+- **MySQL** - Hệ quản trị cơ sở dữ liệu
+- **TypeScript** - Ngôn ngữ lập trình
+- **JWT** - Xác thực và phân quyền
+- **Swagger UI** - API documentation
+
+### Frontend
+- **Next.js** - React framework
+- **React** - Thư viện UI
+- **Tailwind CSS** - Framework CSS
+- **TypeScript** - Ngôn ngữ lập trình
+
 ## Giao diện hệ thống
 
 ### Trang chủ
