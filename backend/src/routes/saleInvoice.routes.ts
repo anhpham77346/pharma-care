@@ -5,6 +5,7 @@ import {
   searchInvoicesByDate,
   getRevenueReport,
 } from '../controllers/saleInvoice.controller';
+import { authenticate } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
@@ -141,8 +142,10 @@ const router = express.Router();
  * @swagger
  * /api/sale-invoices:
  *   post:
- *     summary: Create a new sale invoice
+ *     summary: Create a new sale invoice (employeeId is from token)
  *     tags: [SaleInvoice]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -150,12 +153,8 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - employeeId
  *               - items
  *             properties:
- *               employeeId:
- *                 type: integer
- *                 description: ID of the employee creating the invoice
  *               items:
  *                 type: array
  *                 items:
@@ -214,7 +213,7 @@ const router = express.Router();
  *                           saleInvoiceId:
  *                             type: integer
  *       400:
- *         description: Invalid input data
+ *         description: Invalid input data or business logic error (e.g., insufficient stock)
  *         content:
  *           application/json:
  *             schema:
@@ -222,9 +221,29 @@ const router = express.Router();
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Failed to create sale invoice"
+ *                   example: "Invalid item data: medicineId, quantity, and unitPrice are required for each item."
+ *       401:
+ *         description: Unauthorized (e.g., token missing or invalid)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unauthorized: Employee ID (userId) not found in token"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to create sale invoice due to an internal server error."
  */
-router.post('/', createSaleInvoice);
+router.post('/', authenticate, createSaleInvoice);
 
 /**
  * @swagger

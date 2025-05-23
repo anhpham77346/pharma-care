@@ -3,13 +3,30 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Create a new sale invoice with automatic inventory deduction
-export const createSaleInvoice = async (req: Request, res: Response) => {
-  try {
-    const { employeeId, items } = req.body;
+// Define a type for the user payload in the JWT
+interface TokenPayload {
+  userId: number; // Assuming your JWT payload has userId
+  username: string; // And other relevant fields like username
+  // Add other fields as present in your actual JWT payload
+}
 
-    if (!employeeId || !items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ message: 'Invalid input data' });
+// Extend the Express Request interface to include the user property
+interface AuthenticatedRequest extends Request {
+  user?: TokenPayload;
+}
+
+// Create a new sale invoice with automatic inventory deduction
+export const createSaleInvoice = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const employeeId = req.user?.userId; // Use userId from token payload
+    const { items } = req.body;
+
+    if (!employeeId) {
+      return res.status(401).json({ message: 'Unauthorized: Employee ID (userId) not found in token' });
+    }
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'Invalid input data: items are required' });
     }
 
     // Use transaction to ensure all operations succeed or fail together
@@ -25,8 +42,8 @@ export const createSaleInvoice = async (req: Request, res: Response) => {
       // Create invoice details and update medicine inventory
       const invoiceDetailsPromises = items.map(async (item: { medicineId: number; quantity: number; unitPrice: number }) => {
         // Validate the item
-        if (!item.medicineId || !item.quantity || !item.unitPrice) {
-          throw new Error('Invalid item data');
+        if (!item.medicineId || !item.quantity || item.unitPrice === undefined) { // Ensure unitPrice is present, even if 0
+          throw new Error('Invalid item data: medicineId, quantity, and unitPrice are required for each item.');
         }
 
         // Get the medicine to check inventory
@@ -39,7 +56,7 @@ export const createSaleInvoice = async (req: Request, res: Response) => {
         }
 
         if (medicine.quantity < item.quantity) {
-          throw new Error(`Insufficient inventory for medicine: ${medicine.name}`);
+          throw new Error(`Insufficient inventory for medicine: ${medicine.name} (Available: ${medicine.quantity}, Requested: ${item.quantity})`);
         }
 
         // Create invoice detail
@@ -76,8 +93,14 @@ export const createSaleInvoice = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message || 'Failed to create sale invoice',
+    // Log the error for debugging
+    console.error('Failed to create sale invoice:', error);
+    // Send a more specific error message to the client if it's a known error
+    if (error.message.includes('Insufficient inventory') || error.message.includes('Medicine with ID') || error.message.includes('Invalid item data')) {
+      return res.status(400).json({ message: error.message });
+    }
+    return res.status(500).json({
+      message: 'Failed to create sale invoice due to an internal server error.',
     });
   }
 };
