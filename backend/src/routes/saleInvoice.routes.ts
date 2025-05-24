@@ -251,6 +251,8 @@ router.post('/', authenticate, createSaleInvoice);
  *   get:
  *     summary: Search invoices by date range
  *     tags: [SaleInvoice]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: startDate
@@ -324,7 +326,7 @@ router.post('/', authenticate, createSaleInvoice);
  *                   type: string
  *                   example: "Start date and end date are required"
  */
-router.get('/search', searchInvoicesByDate);
+router.get('/search', authenticate, searchInvoicesByDate);
 
 /**
  * @swagger
@@ -332,6 +334,8 @@ router.get('/search', searchInvoicesByDate);
  *   get:
  *     summary: Get basic revenue report
  *     tags: [SaleInvoice]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: startDate
@@ -374,7 +378,7 @@ router.get('/search', searchInvoicesByDate);
  *                   type: string
  *                   example: "Start date and end date are required"
  */
-router.get('/report/revenue', getRevenueReport);
+router.get('/report/revenue', authenticate, getRevenueReport);
 
 /**
  * @swagger
@@ -382,6 +386,8 @@ router.get('/report/revenue', getRevenueReport);
  *   get:
  *     summary: Get a sale invoice by ID
  *     tags: [SaleInvoice]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -410,6 +416,6 @@ router.get('/report/revenue', getRevenueReport);
  *                   type: string
  *                   example: "Sale invoice not found"
  */
-router.get('/:id', getSaleInvoiceById);
+router.get('/:id', authenticate, getSaleInvoiceById);
 
 export default router; 
