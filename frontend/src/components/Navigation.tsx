@@ -44,7 +44,7 @@ export const Navigation: React.FC = () => {
           </Link>
           <div className="relative" ref={dropdownRef}>
             <button 
-              className="hover:text-gray-200 transition-colors flex items-center gap-2"
+              className="cursor-pointer hover:text-gray-200 transition-colors flex items-center gap-2"
               onClick={toggleDropdown}
             >
               <div className="flex-shrink-0">
@@ -90,7 +90,7 @@ export const Navigation: React.FC = () => {
                     setIsDropdownOpen(false);
                     logout();
                   }}
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-colors"
+                  className="cursor-pointer block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-colors"
                 >
                   Đăng xuất
                 </button>
