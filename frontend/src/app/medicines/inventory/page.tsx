@@ -30,7 +30,7 @@ const InventoryPage = () => {
   const { getToken, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       router.push("/auth/login");
       return;
     }

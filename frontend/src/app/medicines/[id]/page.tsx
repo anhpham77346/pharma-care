@@ -36,7 +36,7 @@ const MedicineDetailPage = () => {
   const medicineId = params.id;
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       router.push("/auth/login");
       return;
     }
