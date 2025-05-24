@@ -28,27 +28,27 @@ const MedicineDetailPage = () => {
   const [medicine, setMedicine] = useState<Medicine | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const params = useParams();
   const router = useRouter();
-  const { getToken, isAuthenticated } = useAuth();
+  const { getToken, isAuthenticated, loading: authLoading } = useAuth();
   
   const medicineId = params.id;
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (!authLoading && !isAuthenticated) {
       router.push("/auth/login");
       return;
     }
 
-    if (medicineId) {
+    if (isAuthenticated && medicineId) {
       fetchMedicineDetails();
     }
-  }, [isAuthenticated, medicineId, router]);
+  }, [isAuthenticated, authLoading, medicineId, router]);
 
   const fetchMedicineDetails = async () => {
     try {
-      setLoading(true);
       const token = await getToken();
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/medicines/${medicineId}`, {
         headers: {
@@ -60,7 +60,8 @@ const MedicineDetailPage = () => {
         if (response.status === 404) {
           throw new Error("Không tìm thấy thông tin thuốc");
         }
-        throw new Error("Failed to fetch medicine details");
+        const errorData = await response.json().catch(() => ({ message: "Failed to fetch medicine details" }));
+        throw new Error(errorData.message || "Failed to fetch medicine details");
       }
 
       const data = await response.json();
@@ -73,6 +74,7 @@ const MedicineDetailPage = () => {
         setError("Error loading medicine details. Please try again later.");
       }
       console.error(err);
+      setMedicine(null);
     } finally {
       setLoading(false);
     }
@@ -80,10 +82,12 @@ const MedicineDetailPage = () => {
 
   const handleDeleteMedicine = async () => {
     if (!medicine) return;
+    setShowDeleteModal(true);
+  };
 
-    if (!confirm("Bạn có chắc chắn muốn xóa thuốc này? Hành động này không thể hoàn tác.")) {
-      return;
-    }
+  const executeDeleteMedicine = async () => {
+    if (!medicine) return;
+    setShowDeleteModal(false);
 
     try {
       const token = await getToken();
@@ -94,14 +98,14 @@ const MedicineDetailPage = () => {
         },
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        toast.error(data.message || "Failed to delete medicine");
+        toast.error(data?.message || "Failed to delete medicine");
         return;
       }
 
-      toast.success("Xóa thuốc thành công");
+      toast.success(data?.message ||"Xóa thuốc thành công");
       router.push("/medicines");
     } catch (err) {
       console.error("Error deleting medicine:", err);
@@ -126,7 +130,7 @@ const MedicineDetailPage = () => {
     }).format(amount);
   };
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="container mx-auto px-4 py-8 flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -175,11 +179,11 @@ const MedicineDetailPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Chi tiết thuốc</h1>
-        <div className="flex space-x-4">
+        <h1 className="text-2xl font-bold text-[#0f172a]">Chi tiết thuốc</h1>
+        <div className="flex space-x-3">
           <Link
             href="/medicines"
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center"
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition-colors flex items-center cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -188,7 +192,7 @@ const MedicineDetailPage = () => {
           </Link>
           <Link
             href={`/medicines/edit/${medicine.id}`}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center"
+            className="bg-[#0057ba] hover:bg-[#00408a] text-white px-4 py-2 rounded-lg transition-colors flex items-center cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
@@ -197,7 +201,7 @@ const MedicineDetailPage = () => {
           </Link>
           <button
             onClick={handleDeleteMedicine}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center"
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -207,15 +211,15 @@ const MedicineDetailPage = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-6">
-          <div className="mb-6 pb-4 border-b">
-            <h2 className="text-3xl font-bold text-gray-800">{medicine.name}</h2>
-            <div className="mt-2 flex items-center">
-              <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="p-6 md:p-8">
+          <div className="mb-6 pb-4 border-b border-gray-200">
+            <h2 className="text-3xl font-bold text-[#0f172a]">{medicine.name}</h2>
+            <div className="mt-2 flex items-center space-x-3">
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                 {medicine.category.name}
               </span>
-              <span className={`ml-4 px-2 py-1 text-xs font-semibold rounded-full 
+              <span className={`px-3 py-1 text-xs font-semibold rounded-full 
                 ${medicine.quantity <= 0 ? 'bg-red-100 text-red-800' : 
                   medicine.quantity < 10 ? 'bg-yellow-100 text-yellow-800' : 
                   'bg-green-100 text-green-800'}`}>
@@ -299,6 +303,42 @@ const MedicineDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {showDeleteModal && medicine && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setShowDeleteModal(false)}></div>
+          <div className="relative bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-[#0f172a]">Xác nhận xóa thuốc</h3>
+              <button onClick={() => setShowDeleteModal(false)} className="text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <p className="text-[#334155] mb-6">
+              Bạn có chắc chắn muốn xóa thuốc <span className="font-semibold text-gray-800">{medicine.name}</span>?
+              Hành động này không thể hoàn tác.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-md cursor-pointer transition-colors"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md cursor-pointer transition-colors"
+                onClick={executeDeleteMedicine}
+              >
+                Xóa thuốc
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

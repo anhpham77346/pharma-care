@@ -317,7 +317,7 @@ const EditMedicinePage = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+              className={`px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer ${
                 loading ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
