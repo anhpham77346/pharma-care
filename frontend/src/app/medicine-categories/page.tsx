@@ -181,14 +181,8 @@ export default function MedicineCategoriesPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12 flex justify-center items-center">
-        <div className="text-xl text-[#0f172a]">
-          <svg className="animate-spin h-8 w-8 text-[#0057ba] mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Đang tải...
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -306,7 +300,7 @@ export default function MedicineCategoriesPage() {
       {/* Modal thêm loại thuốc */}
       {showAddModal && (
         <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black opacity-50"></div>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur"></div>
           <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-xl font-bold mb-4 text-[#0f172a]">Thêm loại thuốc mới</h3>
             <form onSubmit={handleAddCategory}>
@@ -358,7 +352,7 @@ export default function MedicineCategoriesPage() {
       {/* Modal sửa loại thuốc */}
       {showEditModal && currentCategory && (
         <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black opacity-50"></div>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur"></div>
           <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-xl font-bold mb-4 text-[#0f172a]">Sửa loại thuốc</h3>
             <form onSubmit={handleUpdateCategory}>
@@ -410,7 +404,7 @@ export default function MedicineCategoriesPage() {
       {/* Modal xác nhận xóa */}
       {showDeleteModal && currentCategory && (
         <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black opacity-50"></div>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur"></div>
           <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-xl font-bold mb-2 text-[#0f172a]">Xác nhận xóa</h3>
             <p className="mb-6 text-[#334155]">
@@ -419,14 +413,14 @@ export default function MedicineCategoriesPage() {
             <div className="flex justify-end">
               <button
                 type="button"
-                className="mr-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-md"
+                className="mr-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-md cursor-pointer"
                 onClick={() => setShowDeleteModal(false)}
               >
                 Hủy
               </button>
               <button
                 type="button"
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md"
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md cursor-pointer"
                 onClick={handleDeleteCategory}
               >
                 Xóa
